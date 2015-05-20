@@ -55,6 +55,33 @@
             that.hide();
             event.preventDefault();
             event.stopPropagation();
+          },
+          modifySizeWrapper = function(event) {
+            var size_input = that.container.getElementsByTagName("input")[0];
+            var size = parseInt(size_input.value) || 10;
+            var attributes;
+
+            switch(this.getAttribute("data-wysihtml5-dialog-action")) {
+              case "increment":
+                size_input.value = (size+1) + "px";
+                attributes = that._serialize();
+                that.fire("save", attributes);
+                that.hide();
+                event.preventDefault();
+                event.stopPropagation();
+                break;
+              case "decrement":
+                size_input.value = (size-1) + "px";
+                attributes = that._serialize();
+                that.fire("save", attributes);
+                that.hide();
+                event.preventDefault();
+                event.stopPropagation();
+                break;
+              default:
+                that.hide();
+                console.log("no value");
+            }
           };
 
       dom.observe(that.link, "click", function() {
@@ -75,7 +102,8 @@
       });
 
       dom.delegate(this.container, "[data-wysihtml5-dialog-action=save]", "click", callbackWrapper);
-
+      dom.delegate(this.container, "[data-wysihtml5-dialog-action=increment]", "click", modifySizeWrapper);
+      dom.delegate(this.container, "[data-wysihtml5-dialog-action=decrement]", "click", modifySizeWrapper);
       dom.delegate(this.container, "[data-wysihtml5-dialog-action=cancel]", "click", function(event) {
         that.fire("cancel");
         that.hide();
